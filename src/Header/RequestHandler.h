@@ -12,17 +12,21 @@
 #include "APIHandler.h"
 #include "Authenticator.h"
 #include "OperateData.h"
+#include "RequestParser.h"
 
 // Will decode the request string and check if it's a valid request.
 // calling RequestParser to get OperateData then call correspond api function
 class RequestHandler {
  public:
-
   RequestHandler();
   // assign accepted file descriptor, will receive request
   // string and parse to OperateData, then check with Authenticator and call
   // correspond api.
   void SetFd(const int &file_descriptor);
+  // only get the header part
+  int ReadHeader(std::string *header, std::string *msg_over_header);
+  // only get the body part
+  std::string ReadBody(const int& content_length, const std::string &body, std::string *next_request_part);
   // receive request string and send to api
   void WaitForMessage();
   // Get client file descriptor
@@ -36,6 +40,7 @@ class RequestHandler {
   // file descriptor from httpListener, which will keep receiving request from
   // the same connected user
   int client_fd;
+  int read_size;
 };
 
 #endif
