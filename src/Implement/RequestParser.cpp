@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 #include "RequestParser.h"
-
-namespace
+#include <iostream>
+/*namespace
 {
 
     static RequestParser *only_request_parser = nullptr;
-}
-
-RequestParser::unique_ptr<RequestParser> GetInstance()
+}*/
+RequestParser* RequestParser::only_request_parser = nullptr;
+RequestParser* RequestParser::GetInstance()
 {
 
     if (only_request_parser == nullptr)
@@ -37,11 +37,20 @@ Content-Length: 136
   ]
 }
 */
-OperateData *RequestParser::<OperateData>ParseData(const std::string &request)
+OperateData* RequestParser::ParseData(const std::string &request)
 {
     OperateData *new_data = new OperateData();
-    new_data.header["method"] = request.substr(0, request.find(" "));
-    new_data.header["url"] = request.substr(request.find(" ") + 1, request.find(" ", request.find(" ") + 1));
+    new_data->header["method"] = request.substr(0, request.find(" "));
+    size_t url_key_start = request.find(" ") + 2;
+    size_t url_key_end = request.find(" ", request.find(" ") + 1);
+    new_data->header["url"] = request.substr(url_key_start, url_key_end - url_key_start);
+    for(int i = 0; i < new_data->header["url"].length(); i++)
+    {
+        if(new_data->header["url"][i] == '/')
+        {
+            new_data->header["url"].replace(i, 1, "_");
+        }
+    }
     size_t body_start_pos = request.find("{");
     size_t body_end_pos = request.find("}");
     size_t iterate_index = body_start_pos;
@@ -51,8 +60,12 @@ OperateData *RequestParser::<OperateData>ParseData(const std::string &request)
         size_t key_end = request.find('"', key_start);
         size_t value_start = request.find('"', key_end + 1) + 1;
         size_t value_end = request.find('"', value_start);
-        new_data.body[request.substr(key_start, key_end)] = request.substr(value_start, value_end);
+        new_data->body[request.substr(key_start, key_end - key_start)] = request.substr(value_start, value_end - value_start);
         iterate_index = value_end + 1;
     }
     return new_data;
+}
+
+RequestParser::RequestParser(){
+
 }

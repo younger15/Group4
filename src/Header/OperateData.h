@@ -14,15 +14,17 @@
 // new_data["key"] = "value";
 class OperateData {
  public:
-  OperateData();
-  OperateData(OperateData &right);
+  OperateData(){};
+  OperateData(OperateData &right){};
   // Besides HTTP headers, HTTP request method, Request URL, Status Code
   // would store in the header variable.
   std::unordered_map<std::string, std::string> header;
   // Only contain HTTP body.
   std::unordered_map<std::string, std::string> body;
   // only used to access body data
-  std::string &operator[](std::string body_key);
+  std::string &operator[](std::string body_key){
+    return body[body_key];
+  };
 };
 
 #endif
