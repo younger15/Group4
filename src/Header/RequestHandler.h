@@ -17,10 +17,12 @@
 // calling RequestParser to get OperateData then call correspond api function
 class RequestHandler {
  public:
-  // instantiate instance with accepted file descriptor, will receive request
+
+  RequestHandler();
+  // assign accepted file descriptor, will receive request
   // string and parse to OperateData, then check with Authenticator and call
   // correspond api.
-  RequestHandler(const int &file_descriptor);
+  void SetFd(const int &file_descriptor);
   // receive request string and send to api
   void WaitForMessage();
   // Get client file descriptor
