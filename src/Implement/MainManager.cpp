@@ -10,18 +10,21 @@ void SigHandle(int sig, siginfo_t *info, void *ctx) {
 }
 }  // namespace
 
-void MainManager::SetRequestHandler(const RequestHandlerInterface &request_handler){
+void MainManager::SetRequestHandler(const RequestHandler &request_handler) {
   this->request_handler = request_handler;
 }
 
 void MainManager::InitInstance(const uint16_t &port_num) {
   this->port_num = port_num;
-  // when child process ends, it'll exit itself and need to notify parent process to remove it from socket_map
-  // child process will end with calling EndRequest()
+  // when child process ends, it'll exit itself and need to notify parent
+  // process to remove it from socket_map child process will end with calling
+  // EndRequest()
   struct sigaction act;
   act.sa_sigaction = SigHandle;
   sigemptyset(&act.sa_mask);
   act.sa_flags = SA_SIGINFO;
+  // SIGUSR1 is used for customized kill command, which will make parent process
+  // remove child processfrom socket_map
   sigaction(SIGUSR1, &act, NULL);
   request_handler = RequestHandler();
   HttpListener listen_socket = HttpListener::GetInstance();
@@ -43,6 +46,8 @@ void MainManager::NewRequest(const int &socket_fd) {
     socket_map[socket_fd] = child_pid;
   }
   // means child
+  // requestHandler in parent process will never need to handle request, so
+  // .SetFd can be used repeatly.
   else if (child_pid == 0) {
     request_handler.SetFd(socket_fd);
     request_handler.WaitForMessage();
@@ -58,7 +63,7 @@ void MainManager::EndRequest() { kill(getppid(), SIGUSR1); }
 void MainManager::RemoveBySocket(const int &socket_num) {
   std::unordered_map<int, pid_t>::const_iterator find_process =
       socket_map.find(socket_num);
-  if (got == tmpInt.end()) {
+  if (find_process == socket_map.end()) {
     // TODO: call error
   } else {
     socket_map.erase(find_process);
@@ -68,7 +73,7 @@ void MainManager::RemoveBySocket(const int &socket_num) {
 void MainManager::RemoveByPid(const pid_t &p) {
   for (std::unordered_map<int, pid_t>::iterator find_process =
            socket_map.begin();
-       find_process != tmpInt.end();) {
+       find_process != socket_map.end();) {
     if (i->second == p) {
       find_process = socket_map.erase(find_process);
     } else {
