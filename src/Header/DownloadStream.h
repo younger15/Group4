@@ -13,7 +13,8 @@ class DownloadStream {
  public:
   // filename will include file path, set a default chunk size
   DownloadStream(const std::string &filename, const unsigned long &chunk_size);
-  // if run successfully, it will return 1 else return 0
+  // if run successfully, it will return 1 else return 0. When read to EOF, it
+  // return 2.
   int ReadChunk(unsigned long &pos, std::string *const binary);
   // non cpoyable
   DownloadStream(const DownloadStream &) = delete;
@@ -25,7 +26,7 @@ class DownloadStream {
   // filename include file path
   std::string filename;
   // default chunk size
-  unsigned long chuck_size;
+  unsigned long chunk_size;
 };
 
 #endif
