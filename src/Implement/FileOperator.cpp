@@ -42,7 +42,7 @@ int FileOperator::Download(std::unique_ptr<OperateData> data, std::string &file_
     }
 }
 
-void FileOperator::CallingAPI(std::unique_ptr<OperateData> &data) {
+void FileOperator::CallingAPI(std::unique_ptr<OperateData> data) {
     // Get client file descriptor
     const std::string client_fd = data->header["client_file_descriptor"];
     // GET, POST, PUT, DELETE
