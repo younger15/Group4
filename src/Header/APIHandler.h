@@ -13,7 +13,7 @@
 // an interface for all the api which are our main services
 class APIHandler {
  public:
-  APIHandler();
+  APIHandler(){};
   // the start entry of all api services
   // operate data will be give to apis and no longer used in request handler,
   // apis will take the data and free the memory in the end
