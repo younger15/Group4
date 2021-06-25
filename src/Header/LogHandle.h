@@ -12,10 +12,16 @@ class LogHandle {
  public:
   // singleton code convention method.
   static LogHandle *GetInstance();
-  // record these infomation of error event
-  static int recordError(const std::string &time, const std::string &ip,
-                         const std::string &user, const std::string &statusCode,
-                         const std::string &message);
+
+  // record these information of error event to file. If it run successfully, it
+  // will return 1 else 0.
+  static int RecordLog(const std::string &time, const std::string &ip,
+                       const std::string &user, const std::string &status_code,
+                       const std::string &message);
+
+  // set log_path
+  void SetLogPath(std::string path);
+
   // non copyable
   LogHandle(LogHandle &cpy) = delete;
   LogHandle &operator=(LogHandle &cpy) = delete;
@@ -23,6 +29,8 @@ class LogHandle {
  private:
   // singleton code convention method.
   LogHandle();
+  static LogHandle *only_log_handle;
+  static std::string log_path;
 };
 
 #endif
