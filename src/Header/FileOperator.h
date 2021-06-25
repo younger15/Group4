@@ -26,7 +26,7 @@ public:
     int Download(std::unique_ptr<OperateData> data, std::string &file_content);
     
     // Use key "Method" of OperateData to call API
-    void CallingAPI(std::unique_ptr<OperateData> &data) override;
+    void CallingAPI(std::unique_ptr<OperateData> data) override;
     
     // Not copyable or movable
     FileOperator(const FileOperator &copy) = delete;
