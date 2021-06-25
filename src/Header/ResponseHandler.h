@@ -5,6 +5,7 @@
 #ifndef GROUP4_SRC_HEADER_RESPONSEHANDLER_H_
 #define GROUP4_SRC_HEADER_RESPONSEHANDLER_H_
 
+#include <memory>
 #include <string>
 
 #include "OperateData.h"
